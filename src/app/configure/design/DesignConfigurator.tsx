@@ -23,7 +23,7 @@ import { useUploadThing } from "@/lib/uploadthing";
 import { useToast } from "@/components/ui/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { SaveConfigArgs, saveConfig as _saveConfig } from "./actions";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next-nprogress-bar";
 
 interface DesignConfiguratorProps {
   configId: string;
@@ -63,7 +63,7 @@ const DesignConfigurator = ({ imgDimensions, configId, imgUrl }: DesignConfigura
 
   const router = useRouter();
 
-  const { mutate: saveConfig } = useMutation({
+  const { mutate: saveConfig, isPending } = useMutation({
     mutationKey: ["save-config"],
     mutationFn: async (args: SaveConfigArgs) => {
       await Promise.all([saveCofiguration(), _saveConfig(args)]);
@@ -345,6 +345,9 @@ const DesignConfigurator = ({ imgDimensions, configId, imgUrl }: DesignConfigura
               <Button
                 className="w-full"
                 size="sm"
+                isLoading={isPending}
+                disabled={isPending}
+                loadingText="Saving"
                 onClick={() =>
                   saveConfig({
                     color: options.color.value,

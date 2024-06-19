@@ -4,7 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { useUploadThing } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
 import { Image, Loader2, MousePointerSquareDashed } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next-nprogress-bar";
 import { useState, useTransition } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
 import { useToast } from "@/components/ui/use-toast";

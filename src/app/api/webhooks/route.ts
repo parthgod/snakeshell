@@ -3,6 +3,8 @@ import { stripe } from "@/lib/stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import nodemailer from "nodemailer";
+import { OrderReceivedEmailHtml } from "@/components/emails/OrderReceivedEmail";
 
 export async function POST(req: Request) {
   try {
@@ -25,7 +27,7 @@ export async function POST(req: Request) {
       const billingAddress = session.customer_details!.address;
       const shippingAddress = session.shipping_details!.address;
 
-      await db.order.update({
+      const updatedOrder = await db.order.update({
         where: { id: orderId },
         data: {
           isPaid: true,
@@ -51,6 +53,44 @@ export async function POST(req: Request) {
           },
         },
       });
+
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        auth: {
+          user: "parthgenius.gps@gmail.com",
+          pass: "szktlhaxuvxzehco",
+        },
+      });
+
+      console.log("Transporter made");
+
+      const mailOptions = {
+        from: "SnakeShell <parthgenius.gps@gmail.com>",
+        to: event.data.object.customer_details.email,
+        subject: "Thanks for your order",
+        text: "Email content",
+        html: OrderReceivedEmailHtml({
+          orderId,
+          orderDate: updatedOrder.createdAt.toLocaleDateString(),
+          //@ts-ignore
+          shippingAddress: {
+            name: session.customer_details!.name!,
+            city: shippingAddress!.city!,
+            country: shippingAddress!.country!,
+            postalCode: shippingAddress!.postal_code!,
+            street: shippingAddress!.line1!,
+            state: shippingAddress!.state,
+          },
+        }),
+      };
+
+      console.log("mailoptions made");
+
+      const res = await transporter.sendMail(mailOptions);
+      console.log(JSON.parse(JSON.stringify(res)));
     }
 
     return NextResponse.json({ result: event, ok: true });

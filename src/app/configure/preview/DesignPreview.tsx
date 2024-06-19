@@ -3,7 +3,7 @@
 import Phone from "@/components/Phone";
 import { Button } from "@/components/ui/button";
 import { BASE_PRICE, PRODUCTS_PRICES } from "@/config/products";
-import { formatPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { COLORS, MODELS } from "@/validators/option-validator";
 import { Configuration } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
@@ -11,7 +11,7 @@ import { ArrowRight, Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import Confetti from "react-dom-confetti";
 import { createCheckoutSession } from "./actions";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next-nprogress-bar";
 import { useToast } from "@/components/ui/use-toast";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import LoginModal from "@/components/LoginModal";
@@ -83,15 +83,15 @@ const DesignPreview = ({ configuration }: { configuration: Configuration }) => {
         setIsOpen={setIsLoginModalOpen}
       />
 
-      <div className="mt-20 grid grid-cols-1 text-sm sm:grid-cols-12 sm:grid-rows-1 sm:gap-x-6 md:gap-x-8 lg:gap-x-12">
-        <div className="sm:col-span-4 md:col-span-3 md:row-span-2 md:row-end-2">
+      <div className="mt-20 flex flex-col items-center md:grid text-sm sm:grid-cols-12 sm:grid-rows-1 sm:gap-x-6 md:gap-x-8 lg:gap-x-12">
+        <div className="md:col-span-4 lg:col-span-3 md:row-span-2 md:row-end-2">
           <Phone
             imgSrc={configuration.croppedImageUrl!}
-            className={`bg-${tw}`}
+            className={cn(`bg-${tw}`, "max-w-[150px] md:max-w-full")}
           />
         </div>
 
-        <div className="mt-6 sm:col-span-9 sm:mt-0 md:row-end-1">
+        <div className="mt-6 sm:col-span-9 md:row-end-1">
           <h3 className="text-3xl tracking-tight text-gray-900 font-bold">Your {modelLabel} Case</h3>
 
           <div className="mt-3 items-center flex gap-1.5 text-base">
