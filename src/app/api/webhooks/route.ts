@@ -65,8 +65,6 @@ export async function POST(req: Request) {
         },
       });
 
-      console.log("Transporter made");
-
       const mailOptions = {
         from: "SnakeShell <parthgenius.gps@gmail.com>",
         to: event.data.object.customer_details.email,
@@ -87,10 +85,7 @@ export async function POST(req: Request) {
         }),
       };
 
-      console.log("mailoptions made");
-
-      const res = await transporter.sendMail(mailOptions);
-      console.log(JSON.parse(JSON.stringify(res)));
+      await transporter.sendMail(mailOptions);
     }
 
     return NextResponse.json({ result: event, ok: true });
